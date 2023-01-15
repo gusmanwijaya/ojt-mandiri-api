@@ -60,9 +60,9 @@ module.exports = {
     const count = await Product.count(condition);
 
     const payload = {
-      current_page: parsePage,
-      total_page: Math.ceil(count / parseLimit),
-      total_data: count,
+      currentPage: parsePage,
+      totalPage: Math.ceil(count / parseLimit),
+      totalData: count,
       data,
     };
 

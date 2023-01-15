@@ -21,12 +21,15 @@ module.exports = {
   },
   getProducts: async (req, res, next) => {
     try {
-      const data = await getProducts(req);
+      const response = await getProducts(req);
 
       res.status(StatusCodes.OK).json({
         statusCode: StatusCodes.OK,
         message: "Successfully get company's product!",
-        data,
+        currentPage: response.currentPage,
+        totalPage: response.totalPage,
+        totalData: response.totalData,
+        data: response.data,
       });
     } catch (error) {
       next(error);

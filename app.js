@@ -12,6 +12,7 @@ const usersRouter = require("./app/api/v1/users/router");
 const authenticationsRouter = require("./app/api/v1/authentications/router");
 const companiesRouter = require("./app/api/v1/companies/router");
 const productsRouter = require("./app/api/v1/products/router");
+const dashboardsRouter = require("./app/api/v1/dashboards/router");
 // END: Import router
 
 // START: Import middleware handle error
@@ -34,6 +35,7 @@ app.use(`${apiVersion}/users`, usersRouter);
 app.use(`${apiVersion}/auth`, authenticationsRouter);
 app.use(`${apiVersion}/companies`, companiesRouter);
 app.use(`${apiVersion}/products`, productsRouter);
+app.use(`${apiVersion}/dashboards`, dashboardsRouter);
 
 app.use(notFound);
 app.use(handleError);

@@ -42,7 +42,7 @@ module.exports = {
     return data;
   },
   getCompanies: async (req) => {
-    const { page = 1, limit = 25, type, name } = req.query;
+    const { page = 1, limit = 25, search } = req.query;
     const parsePage = parseInt(page);
     const parseLimit = parseInt(limit);
 
@@ -51,19 +51,19 @@ module.exports = {
       limit: parseLimit,
     };
 
-    if (type || name) {
+    if (search) {
       condition = {
         ...condition,
         where: {
           [Op.or]: [
             {
               type: {
-                [Op.substring]: type,
+                [Op.substring]: search,
               },
             },
             {
               name: {
-                [Op.substring]: name,
+                [Op.substring]: search,
               },
             },
           ],
@@ -76,9 +76,9 @@ module.exports = {
     const count = await Company.count(condition);
 
     const payload = {
-      current_page: parsePage,
-      total_page: Math.ceil(count / parseLimit),
-      total_data: count,
+      currentPage: parsePage,
+      totalPage: Math.ceil(count / parseLimit),
+      totalData: count,
       data,
     };
 

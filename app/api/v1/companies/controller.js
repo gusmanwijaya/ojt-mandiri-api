@@ -23,12 +23,15 @@ module.exports = {
   },
   getCompanies: async (req, res, next) => {
     try {
-      const data = await getCompanies(req);
+      const response = await getCompanies(req);
 
       res.status(StatusCodes.OK).json({
         statusCode: StatusCodes.OK,
         message: "Successfully get companies!",
-        data,
+        currentPage: response.currentPage,
+        totalPage: response.totalPage,
+        totalData: response.totalData,
+        data: response.data,
       });
     } catch (error) {
       next(error);
