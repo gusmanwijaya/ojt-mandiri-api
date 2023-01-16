@@ -5,6 +5,7 @@ const {
   detailCompany,
   destroyCompany,
   editCompany,
+  importCompanies,
 } = require("../../../services/sequelize/companies");
 
 module.exports = {
@@ -70,6 +71,19 @@ module.exports = {
       res.status(StatusCodes.OK).json({
         statusCode: StatusCodes.OK,
         message: "Successfully updated company!",
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  importCompanies: async (req, res, next) => {
+    try {
+      const data = await importCompanies(req);
+
+      res.status(StatusCodes.CREATED).json({
+        statusCode: StatusCodes.CREATED,
+        message: "Successfully imported companies!",
         data,
       });
     } catch (error) {

@@ -1,6 +1,9 @@
 const { Company } = require("../../models");
 const CustomError = require("../../errors");
 const { Op } = require("sequelize");
+const excelToJson = require("simple-excel-to-json");
+const fs = require("fs");
+const sequelize = require("sequelize");
 
 module.exports = {
   createCompany: async (req) => {
@@ -57,14 +60,18 @@ module.exports = {
         where: {
           [Op.or]: [
             {
-              type: {
-                [Op.substring]: search,
-              },
+              type: sequelize.where(
+                sequelize.fn("LOWER", sequelize.col("type")),
+                "LIKE",
+                "%" + search.toLowerCase() + "%"
+              ),
             },
             {
-              name: {
-                [Op.substring]: search,
-              },
+              name: sequelize.where(
+                sequelize.fn("LOWER", sequelize.col("name")),
+                "LIKE",
+                "%" + search.toLowerCase() + "%"
+              ),
             },
           ],
         },
@@ -165,6 +172,22 @@ module.exports = {
     data.additionalInfo = additionalInfo;
 
     await data.save();
+
+    return data;
+  },
+  importCompanies: async (req) => {
+    if (!req.file)
+      throw new CustomError.BadRequest("Please upload a file .xls or .xlsx!");
+
+    const sourceFile = req.file.path;
+
+    const result = excelToJson.parseXls2Json(sourceFile)[0];
+
+    const data = await Company.bulkCreate(result);
+
+    if (fs.existsSync(sourceFile)) {
+      fs.unlinkSync(sourceFile);
+    }
 
     return data;
   },
