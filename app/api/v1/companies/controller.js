@@ -7,6 +7,9 @@ const {
   editCompany,
   importCompanies,
 } = require("../../../services/sequelize/companies");
+const { getOutscraper } = require("../../../services/outscraper");
+const { rootPath } = require("../../../configs/config");
+const fs = require("fs");
 
 module.exports = {
   createCompany: async (req, res, next) => {
@@ -86,6 +89,32 @@ module.exports = {
         message: "Successfully imported companies!",
         data,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getOutscraper: async (req, res, next) => {
+    try {
+      const data = await getOutscraper(req);
+
+      res.status(StatusCodes.OK).json({
+        statusCode: StatusCodes.OK,
+        message: "Successfully get data companies from outscraper!",
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  downloadTemplateImport: async (req, res, next) => {
+    try {
+      const fileName = "Template-Import.xlsx";
+      const anyCurrentPath = `${rootPath}/public/data/${fileName}`;
+
+      if (!fs.existsSync(anyCurrentPath))
+        throw new CustomError.NotFound("Template not found!");
+
+      res.download(anyCurrentPath);
     } catch (error) {
       next(error);
     }

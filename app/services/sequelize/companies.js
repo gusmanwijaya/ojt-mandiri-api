@@ -23,7 +23,7 @@ module.exports = {
     if (!name) throw new CustomError.BadRequest("Please input name!");
     if (!address) throw new CustomError.BadRequest("Please input address!");
 
-    if (email) {
+    if (email && email !== "" && email !== "-") {
       const emailFormat =
         /^[a-zA-Z0-9_.+]+(?<!^[0-9]*)@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
       if (!email.match(emailFormat))
@@ -154,7 +154,7 @@ module.exports = {
     if (!name) throw new CustomError.BadRequest("Please input name!");
     if (!address) throw new CustomError.BadRequest("Please input address!");
 
-    if (email) {
+    if (email && email !== "" && email !== "-") {
       const emailFormat =
         /^[a-zA-Z0-9_.+]+(?<!^[0-9]*)@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
       if (!email.match(emailFormat))
