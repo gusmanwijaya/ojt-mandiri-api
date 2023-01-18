@@ -1,13 +1,15 @@
 const { Product, Company } = require("../../models");
 const CustomError = require("../../errors");
+const sequelize = require("sequelize");
 const { Op } = require("sequelize");
 
 module.exports = {
   createProduct: async (req) => {
     const { id: companyId } = req.params;
-    const { name } = req.body;
+    const { name = [] } = req.body;
 
-    if (!name) throw new CustomError.BadRequest("Please input name!");
+    if (!name || name.length < 1)
+      throw new CustomError.BadRequest("Please input name!");
 
     const checkCompany = await Company.findOne({
       where: {
@@ -17,16 +19,40 @@ module.exports = {
 
     if (!checkCompany) throw new CustomError.NotFound("Company not found!");
 
-    const data = await Product.create({
-      name,
-      companyId,
+    const checkStatusCompany = await Company.findOne({
+      where: {
+        id: companyId,
+        isRegistered: "Sudah",
+      },
     });
+
+    if (!checkStatusCompany)
+      throw new CustomError.NotFound("Company not registered!");
+
+    const payload = [];
+    name.length > 0 &&
+      name.map((value) =>
+        payload.push({
+          name: value,
+          companyId,
+        })
+      );
+
+    if (payload.length < 1) throw new CustomError.BadRequest("Payload empty!");
+
+    await Product.destroy({
+      where: {
+        companyId,
+      },
+    });
+
+    const data = await Product.bulkCreate(payload);
 
     return data;
   },
   getProducts: async (req) => {
     const { id: companyId } = req.params;
-    const { page = 1, limit = 25, name } = req.query;
+    const { page = 1, limit = 25 } = req.query;
 
     const parsePage = parseInt(page);
     const parseLimit = parseInt(limit);
@@ -43,18 +69,6 @@ module.exports = {
         },
       ],
     };
-
-    if (name) {
-      condition = {
-        ...condition,
-        where: {
-          ...condition.where,
-          name: {
-            [Op.substring]: name,
-          },
-        },
-      };
-    }
 
     const data = await Product.findAll(condition);
     const count = await Product.count(condition);
