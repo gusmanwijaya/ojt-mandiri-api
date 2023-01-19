@@ -1,4 +1,4 @@
-const { Company } = require("../../models");
+const { Company, Product } = require("../../models");
 const CustomError = require("../../errors");
 const { Op } = require("sequelize");
 const excelToJson = require("simple-excel-to-json");
@@ -120,6 +120,16 @@ module.exports = {
     });
 
     if (!data) throw new CustomError.NotFound("Company not found!");
+
+    const checkIsAnyProducts = await Product.findAll({
+      where: {
+        companyId,
+      },
+    });
+    if (checkIsAnyProducts.length > 0)
+      throw new CustomError.BadRequest(
+        "Company can't be deleted because they still have products!"
+      );
 
     await data.destroy();
 

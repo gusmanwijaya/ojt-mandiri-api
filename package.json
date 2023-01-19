@@ -3,11 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "start:dev": "nodemon ./bin/www",
-    "dev": "env-cmd -f./.env pm2 start 'yarn start:dev' --name 'OJT-API-DEV'",
-    "reload": "pm2 delete OJT-API-DEV && yarn dev",
-    "prod": "env-cmd -f./.env.prod pm2 start 'yarn start' --name 'OJT-API-PROD'"
+    "dev": "env-cmd -f./.env nodemon ./bin/www",
+    "prod": "env-cmd -f./.env.prod node ./bin/www"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -21,6 +18,7 @@
     "jsonwebtoken": "^9.0.0",
     "morgan": "~1.9.1",
     "multer": "^1.4.5-lts.1",
+    "nodemon": "^2.0.20",
     "outscraper": "^2.0.0",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
