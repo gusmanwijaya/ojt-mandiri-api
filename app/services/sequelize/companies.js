@@ -121,15 +121,11 @@ module.exports = {
 
     if (!data) throw new CustomError.NotFound("Company not found!");
 
-    const checkIsAnyProducts = await Product.findAll({
+    await Product.destroy({
       where: {
         companyId,
       },
     });
-    if (checkIsAnyProducts.length > 0)
-      throw new CustomError.BadRequest(
-        "Company can't be deleted because they still have products!"
-      );
 
     await data.destroy();
 
