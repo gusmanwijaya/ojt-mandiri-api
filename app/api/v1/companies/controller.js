@@ -6,6 +6,7 @@ const {
   destroyCompany,
   editCompany,
   importCompanies,
+  truncateCompanies,
 } = require("../../../services/sequelize/companies");
 const { getOutscraper } = require("../../../services/outscraper");
 const { rootPath } = require("../../../configs/config");
@@ -115,6 +116,19 @@ module.exports = {
         throw new CustomError.NotFound("Template not found!");
 
       res.download(anyCurrentPath);
+    } catch (error) {
+      next(error);
+    }
+  },
+  truncateCompanies: async (req, res, next) => {
+    try {
+      const data = await truncateCompanies(req);
+
+      res.status(StatusCodes.OK).json({
+        statusCode: StatusCodes.OK,
+        message: "Successfully truncate table companies!",
+        data,
+      });
     } catch (error) {
       next(error);
     }

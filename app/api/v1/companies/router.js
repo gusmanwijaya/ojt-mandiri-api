@@ -10,6 +10,7 @@ const {
   importCompanies,
   getOutscraper,
   downloadTemplateImport,
+  truncateCompanies,
 } = require("./controller");
 const { authenticationUser } = require("../../../middlewares/authentication");
 const uploadMiddleware = require("../../../middlewares/multer");
@@ -25,5 +26,6 @@ router.delete("/destroy/:id", destroyCompany);
 router.patch("/edit/:id", editCompany);
 router.post("/import", uploadMiddleware.single("file"), importCompanies);
 router.get("/outscraper", getOutscraper);
+router.delete("/truncate", truncateCompanies);
 
 module.exports = router;

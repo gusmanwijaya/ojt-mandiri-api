@@ -52,6 +52,7 @@ module.exports = {
     let condition = {
       offset: parseLimit * (parsePage - 1),
       limit: parseLimit,
+      order: [["createdAt", "DESC"]],
     };
 
     if (search) {
@@ -194,6 +195,19 @@ module.exports = {
     if (fs.existsSync(sourceFile)) {
       fs.unlinkSync(sourceFile);
     }
+
+    return data;
+  },
+  truncateCompanies: async (req) => {
+    await Product.destroy({
+      truncate: true,
+    });
+
+    const data = await Company.destroy({
+      truncate: {
+        cascade: true,
+      },
+    });
 
     return data;
   },
